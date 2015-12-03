@@ -82,7 +82,7 @@ void measure()
 void inpuls()
 {
 //    pinSetFast(S0_led);
-    RGB.color(255, 255, 0);
+    RGB.color(255, 0, 0);
 
     S0++; intowerflow++;
     p_micros = c_micros;
