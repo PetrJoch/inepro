@@ -2,7 +2,7 @@
 // of the Spark Core.
 // provide S0, kwh, watt, ahwatt, adwatt
 
-#include "Inepro.h"
+#include "inepro.h"
 
 // We name pin D0 as led
 // int hb_led = D7;
@@ -10,8 +10,9 @@ int S0_led = D7;
 int e_inp = D3;
 
 unsigned long S0 = 0;
+unsigned long m_uptime = 0;
 unsigned long p_micros, p_millis, c_micros, c_millis;
-float kwh = 0;
+double kwh = -0.001;
 
 int watt = 0;
 int ahwatt = 0;
@@ -20,7 +21,7 @@ int intowerflow = 0;
 
 int hb_led_state = LOW;
 int S0_led_state = LOW;
-int S0_led_count = 0;
+int S0_led_count = 30;
 int hb = 0;
 
 // This routine runs only once upon reset
@@ -36,6 +37,7 @@ void setup()
 
 // variable name max length is 12 characters long
   Particle.variable("S0", S0);
+  Particle.variable("m_uptime", m_uptime);
 
   Particle.variable("kwh", kwh);
   Particle.variable("watt", watt);
@@ -64,17 +66,19 @@ void measure()
 {
     unsigned long t;
 
-        if (S0_led_count==1)
-            RGB.color(0, 0, 0);
+    if ((millis()-c_millis)>S0_led_count)
+        RGB.color(0, 0, 0);
 //            pinResetFast(S0_led);
 
-        if (S0_led_count>0)
-            S0_led_count--;
+//        if (S0_led_count>(milis0)
+//            S0_led_count--;
 
 
     t = c_millis - p_millis;
     ahwatt = t ;
     watt = 360000 / t ;
+    m_uptime = c_millis / 60000;
+    kwh = (double) S0 / 10000;
 
 }
 
@@ -89,7 +93,7 @@ void inpuls()
     p_millis = c_millis;
     c_micros = micros();
     c_millis = millis();
-    S0_led_count = 80;
+    S0_led_count = 20;
 
 }
 
